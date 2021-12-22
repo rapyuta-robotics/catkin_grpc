@@ -237,4 +237,9 @@ function(generate_proto PROTO_TARGET_NAME)
     target_link_libraries(${PROTO_TARGET_NAME} ${ALL_GRPC_LIBS} pthread)
   endif()
 
+  install(TARGETS
+  ${PROTO_TARGET_NAME}
+
+  LIBRARY DESTINATION ${CATKIN_GLOBAL_LIB_DESTINATION}
+)
 endfunction()
