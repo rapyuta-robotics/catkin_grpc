@@ -1,13 +1,3 @@
-if(CMAKE_VERSION VERSION_LESS "3.1")
-  if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    set(CMAKE_CXX_FLAGS "--std=gnu++11 ${CMAKE_CXX_FLAGS}")
-  else()
-    message(SEND_ERROR "Error: Can not enable C++ 11 for gRPC")
-  endif()
-else()
-  set(CMAKE_CXX_STANDARD 11)
-endif()
-
 find_program(FIND find)
 if(NOT FIND)
   message(SEND_ERROR "Cannot find find.")
@@ -53,10 +43,6 @@ find_library(LIBGRPCPP_CHANNELZ grpcpp_channelz
 find_library(LIBGRPC_PLUGIN_SUPPORT grpc_plugin_support
              PATHS ${GRPC_LIB_DIR} NO_DEFAULT_PATH)
 find_library(LIBGRPCPP_REFLECTION grpc++_reflection
-             PATHS ${GRPC_LIB_DIR} NO_DEFAULT_PATH)
-find_library(LIBGRPC_UNSECURE grpc_unsecure
-             PATHS ${GRPC_LIB_DIR} NO_DEFAULT_PATH)
-find_library(LIBGRPCPP_UNSECURE grpc++_unsecure
              PATHS ${GRPC_LIB_DIR} NO_DEFAULT_PATH)
 
 set(ALL_GRPC_LIBS ${LIBADDRESS_SORTING} ${LIBARES} ${LIBBORINGSSL} ${LIBGPR} ${LIBGRPC} ${LIBGRPCPP}
@@ -238,8 +224,12 @@ function(generate_proto PROTO_TARGET_NAME)
   endif()
 
   install(TARGETS
-  ${PROTO_TARGET_NAME}
+    ${PROTO_TARGET_NAME}
+    LIBRARY DESTINATION ${CATKIN_GLOBAL_LIB_DESTINATION}
+  )
 
-  LIBRARY DESTINATION ${CATKIN_GLOBAL_LIB_DESTINATION}
-)
+  install(DIRECTORY ${GENERATE_PROTO_CC_HDR_OUTPUT_DIR}/
+    DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION}
+    FILES_MATCHING PATTERN "*.hpp" PATTERN "*.h"
+  )
 endfunction()
